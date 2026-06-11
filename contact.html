@@ -117,6 +117,14 @@ nav .nav-logo{justify-self:start}
 .form-submit button{display:inline-flex;align-items:center;gap:10px;padding:14px 36px;font-family:var(--sans);font-weight:600;font-size:.95rem;letter-spacing:.02em;color:#fff;background:var(--navy);border:1.5px solid rgba(25,34,45,.08);border-radius:100px;cursor:pointer;transition:all .4s var(--ease)}
 .form-submit button:hover{background:#19222d;border-color:#19222d;color:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(25,34,45,.3)}
 .form-submit button span{position:relative;z-index:1}
+.form-consent{margin-top:18px;text-align:left}
+.consent-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:.88rem;color:var(--text-dark);line-height:1.55}
+.consent-label input[type="checkbox"]{width:17px;height:17px;margin-top:2px;flex-shrink:0;accent-color:var(--navy);cursor:pointer}
+.consent-label a{color:var(--navy);font-weight:600;text-decoration:underline;text-underline-offset:2px;transition:color .3s}
+.consent-label a:hover{color:var(--slate)}
+.consent-note{margin-top:10px;font-size:.78rem;line-height:1.6;color:var(--text-light)}
+.consent-note a{color:var(--text-mid);text-decoration:underline;text-underline-offset:2px;transition:color .3s}
+.consent-note a:hover{color:var(--navy)}
 
 .form-success{display:none;text-align:center;padding:48px 24px}
 .form-success svg{width:48px;height:48px;color:var(--navy);margin-bottom:16px}
@@ -314,6 +322,13 @@ footer .container{grid-template-columns:1fr!important;text-align:center}
             <label for="message">Message</label>
           </div>
         </div>
+        <div class="form-consent">
+          <label class="consent-label" for="consent">
+            <input type="checkbox" id="consent" name="consent" value="yes" required aria-required="true">
+            <span>I agree to the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>.</span>
+          </label>
+          <p class="consent-note">By submitting this form, you agree that Mozaiik may collect and process the information provided to respond to your inquiry, in accordance with our <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>.</p>
+        </div>
         <div class="form-submit">
           <button type="submit"><span>Send Message</span></button>
         </div>
@@ -417,6 +432,12 @@ document.documentElement.classList.add('js');
       if(!data.firstName||!data.lastName||!data.email){
         if(btn)btn.textContent=originalText;
         alert('Please fill in your name and email.');
+        return;
+      }
+      /* Consent is required — backstop for the required checkbox */
+      if(!data.consent){
+        if(btn)btn.textContent=originalText;
+        alert('Please agree to the Privacy Policy and Terms of Service before sending your message.');
         return;
       }
 

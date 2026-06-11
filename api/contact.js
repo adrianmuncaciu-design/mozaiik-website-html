@@ -24,6 +24,7 @@ export default async function handler(req, res) {
     const firmName = String(body.firmName || "").trim();
     const email = String(body.email || "").trim();
     const message = String(body.message || "").trim();
+    const consent = String(body.consent || "").trim();
     const gotcha = String(body._gotcha || "").trim();
 
     // Honeypot — bots will fill this invisible field
@@ -37,6 +38,9 @@ export default async function handler(req, res) {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ error: "Please provide a valid email address." });
+    }
+    if (!consent) {
+      return res.status(400).json({ error: "Please agree to the Privacy Policy and Terms of Service before sending your message." });
     }
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -57,6 +61,7 @@ export default async function handler(req, res) {
               <tr><td style="padding:10px 0;color:#6E7180;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;width:30%">Name</td><td style="padding:10px 0;color:#19222d;font-size:14px">${escapeHtml(firstName + " " + lastName)}</td></tr>
               <tr><td style="padding:10px 0;color:#6E7180;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Email</td><td style="padding:10px 0;color:#19222d;font-size:14px"><a href="mailto:${escapeHtml(email)}" style="color:#52a49a;text-decoration:none">${escapeHtml(email)}</a></td></tr>
               ${firmName ? `<tr><td style="padding:10px 0;color:#6E7180;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Firm</td><td style="padding:10px 0;color:#19222d;font-size:14px">${escapeHtml(firmName)}</td></tr>` : ""}
+              <tr><td style="padding:10px 0;color:#6E7180;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Consent</td><td style="padding:10px 0;color:#19222d;font-size:14px">Agreed to Privacy Policy and Terms of Service</td></tr>
             </table>
             ${message ? `<div style="padding-top:20px;border-top:1px solid #EDEFF7"><p style="color:#6E7180;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin:0 0 10px">Message</p><p style="color:#19222d;font-size:14px;line-height:1.7;margin:0;white-space:pre-wrap">${escapeHtml(message)}</p></div>` : ""}
           </div>
@@ -68,6 +73,7 @@ export default async function handler(req, res) {
         `Name: ${firstName} ${lastName}`,
         `Email: ${email}`,
         firmName ? `Firm: ${firmName}` : "",
+        `Consent: agreed to Privacy Policy and Terms of Service`,
         ``,
         message ? `Message:\n${message}` : "(no message)",
       ].filter(Boolean).join("\n");
