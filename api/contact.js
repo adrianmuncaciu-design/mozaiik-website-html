@@ -89,7 +89,7 @@ export default async function handler(req, res) {
       });
 
       if (resendRes.ok) {
-        return res.status(200).json({ ok: true, method: "email", message: "Thanks — we'll be in touch within 24 hours." });
+        return res.status(200).json({ ok: true, method: "email", message: "Thanks — we'll follow up shortly." });
       } else {
         const errText = await resendRes.text();
         console.error("[contact] Resend error:", resendRes.status, errText);
